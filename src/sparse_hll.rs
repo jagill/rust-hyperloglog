@@ -1,4 +1,5 @@
 use crate::constants::SPARSE_PREFIX_LENGTH;
+use crate::linear_counting;
 use crate::{HyperLogLog, Merge, SetHyperLogLog};
 use std::collections::BTreeMap;
 
@@ -24,7 +25,7 @@ impl HyperLogLog for SparseHyperLogLog {
     fn cardinality(&self) -> u64 {
         let total_buckets = (1u64 << SPARSE_PREFIX_LENGTH) as f64;
         let zero_buckets = total_buckets - (self.buckets.len() as f64);
-        (total_buckets * (total_buckets / zero_buckets).ln()).round() as u64
+        linear_counting(total_buckets, zero_buckets)
     }
 }
 
